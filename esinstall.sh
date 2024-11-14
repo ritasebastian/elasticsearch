@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script used to setup elasticsearch. Can be run as a regular user (needs sudo)
+# Script used to setup Elasticsearch. Can be run as a regular user (needs sudo)
 
 ES_USER="elasticsearch"
 ES_GROUP="$ES_USER"
@@ -7,69 +7,77 @@ ES_HOME="/usr/local/share/elasticsearch"
 ES_CLUSTER="clustername"
 ES_DATA_PATH="/var/data/elasticsearch"
 ES_LOG_PATH="/var/log/elasticsearch"
-ES_HEAP_SIZE=1024
+ES_HEAP_SIZE="1g"
 ES_MAX_OPEN_FILES=32000
 
 # Path to main config
-CONFIG="$ES_HOME/config/elasticsearch.yml"
-
-# Path to service wrapper config
-SERVICE_CONFIG="$ES_HOME/bin/service/elasticsearch.conf"
+CONFIG="/etc/elasticsearch/elasticsearch.yml"
 
 # Add group and user (without creating the homedir)
 echo "Add user: $ES_USER"
 sudo useradd -d $ES_HOME -M -s /bin/bash -U $ES_USER
 
 # Bump max open files for the user
-sudo sh -c "echo '$ES_USER soft nofile $ES_MAX_OPEN_FILES' >> /etc/security/limits.conf"
-sudo sh -c "echo '$ES_USER hard nofile $ES_MAX_OPEN_FILES' >> /etc/security/limits.conf"
-
-cd ~
+echo "$ES_USER soft nofile $ES_MAX_OPEN_FILES" | sudo tee -a /etc/security/limits.conf
+echo "$ES_USER hard nofile $ES_MAX_OPEN_FILES" | sudo tee -a /etc/security/limits.conf
 
 echo "Update system"
 sudo yum update -y
 
-echo "Install JRE"
-sudo yum install jre -y
+echo "Install OpenJDK 11"
+sudo yum install -y java-11-openjdk
 
-echo "Downloading elasticsearch"
-wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.7.tar.gz -O elasticsearch.tar.gz
+echo "Downloading Elasticsearch"
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.x-linux-x86_64.tar.gz -O elasticsearch.tar.gz
 
+# Extract and move Elasticsearch
 tar -xf elasticsearch.tar.gz
 rm elasticsearch.tar.gz
-mv elasticsearch-* elasticsearch
 sudo mkdir -p $ES_HOME
-sudo mv elasticsearch/* $ES_HOME
-rm -rf elasticsearch
+sudo mv elasticsearch-*/* $ES_HOME
+rm -rf elasticsearch-*
 
-echo "Install service wrapper"
-curl -L http://github.com/elasticsearch/elasticsearch-servicewrapper/tarball/master | tar -xz
-sudo mv *servicewrapper*/service $ES_HOME/bin/
-rm -rf *servicewrapper*
-sudo $ES_HOME/bin/service/elasticsearch install
-
-echo "Fix configuration files"
-sudo sed -i "s|^# bootstrap.mlockall:.*$|bootstrap.mlockall: true|" $CONFIG
-sudo sh -c "echo 'path.logs: $ES_LOG_PATH' >> $CONFIG"
-sudo sh -c "echo 'path.data: $ES_DATA_PATH' >> $CONFIG"
-sudo sh -c "echo 'cluster.name: $ES_CLUSTER' >> $CONFIG"
-
-# Fix these two in $CONFIG if your network does not do multicast
-# network.host: <ip of current node>
-# discovery.zen.ping.unicast.hosts: ["<ip of other node in the cluster>"]
-
-sudo sed -i "s|set\.default\.ES_HOME=.*$|set.default.ES_HOME=$ES_HOME|" $SERVICE_CONFIG
-sudo sed -i "s|set\.default\.ES_HEAP_SIZE=[0-9]\+|set.default.ES_HEAP_SIZE=$ES_HEAP_SIZE|" $SERVICE_CONFIG
-
-sudo sed -i "s|^#RUN_AS_USER=.*$|RUN_AS_USER=$ES_USER|" $ES_HOME/bin/service/elasticsearch
-sudo sed -i "s|^#ULIMIT_N=.*$|ULIMIT_N=$ES_MAX_OPEN_FILES|" $ES_HOME/bin/service/elasticsearch
-
-echo "Create data and log directories and fix permissions"
+echo "Configuring Elasticsearch"
 sudo mkdir -p $ES_LOG_PATH $ES_DATA_PATH
 sudo chown -R $ES_USER:$ES_GROUP $ES_LOG_PATH $ES_DATA_PATH $ES_HOME
 
-echo "Install plugins"
-sudo $ES_HOME/bin/plugin -install karmi/elasticsearch-paramedic
+# Elasticsearch configuration
+sudo tee $CONFIG <<EOF
+cluster.name: $ES_CLUSTER
+path.data: $ES_DATA_PATH
+path.logs: $ES_LOG_PATH
+network.host: 0.0.0.0
+http.port: 9200
+discovery.seed_hosts: ["127.0.0.1"]
+bootstrap.memory_lock: true
+EOF
 
-# Start the daemon
-sudo /etc/init.d/elasticsearch start
+echo "Setting JVM options"
+# Set JVM heap size in jvm.options
+echo "-Xms${ES_HEAP_SIZE}" | sudo tee /etc/elasticsearch/jvm.options.d/heap.options
+echo "-Xmx${ES_HEAP_SIZE}" | sudo tee -a /etc/elasticsearch/jvm.options.d/heap.options
+
+echo "Creating systemd service"
+sudo tee /etc/systemd/system/elasticsearch.service <<EOF
+[Unit]
+Description=Elasticsearch
+Documentation=https://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Environment=JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+ExecStart=$ES_HOME/bin/elasticsearch
+User=$ES_USER
+LimitNOFILE=$ES_MAX_OPEN_FILES
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and start Elasticsearch
+sudo systemctl daemon-reload
+sudo systemctl enable elasticsearch.service
+sudo systemctl start elasticsearch.service
+echo "Elasticsearch setup completed. Use 'sudo systemctl status elasticsearch' to check status."
