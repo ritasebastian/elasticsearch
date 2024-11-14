@@ -1,9 +1,10 @@
 #!/bin/bash
 # Create elasticsearch directories
 sudo mkdir -p /users/elasticsearch
-sudo mkidr -p /elasticsearch/product
-sudo mkidr -p /elasticsearch/data
-sudo mkidr -p /elasticsearch/config
+sudo mkdir -p /elasticsearch/product
+sudo mkdir -p /elasticsearch/product/java
+sudo mkdir -p /elasticsearch/data
+sudo mkdir -p /elasticsearch/config
 sudo mkdir -p /elasticsearch/log
 
 # Script used to setup Elasticsearch. Can be run as a regular user (needs sudo)
@@ -36,6 +37,7 @@ echo "Update system"
 sudo yum update -y
 
 
+sudo su - elasticsearch
 
 echo "Install OpenJDK 11"
 # Download and install Amazon Corretto 11 (OpenJDK)
@@ -45,8 +47,11 @@ wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.tar.
 # Extract the downloaded binary
 tar zxvf amazon-corretto-11-x64-linux-jdk.tar.gz
 
-# Rename the extracted directory to 'java'
-sudo mv amazon-corretto-11.* java
+# Move the extracted directory to 'java'
+cp -r amazon-corretto-11.0.25.9.1-linux-x64/* java
+
+# Remove Java tar file
+rm -rf amazon*
 
 echo "Downloading Elasticsearch"
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.16.0-linux-x86_64.tar.gz -O elasticsearch.tar.gz
@@ -54,9 +59,9 @@ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.16.0-l
 # Extract and move Elasticsearch
 tar -xf elasticsearch.tar.gz
 rm elasticsearch.tar.gz
+mv elasticsearch-8.16.0 8.16
+export ES_HOME=/elasticsearch/product/8.16
 
-sudo mv elasticsearch-*/* $ES_HOME
-rm -rf elasticsearch-*
 
 echo "Configuring Elasticsearch"
 sudo mkdir -p $ES_LOG_PATH $ES_DATA_PATH
@@ -87,7 +92,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-Environment=JAVA_HOME=/usr/local/share/elasticsearch/java
+Environment=JAVA_HOME=/elasticsearch/product/java
 ExecStart=$ES_HOME/bin/elasticsearch
 User=$ES_USER
 LimitNOFILE=$ES_MAX_OPEN_FILES
