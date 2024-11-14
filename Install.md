@@ -75,7 +75,7 @@ This command will prompt you to either automatically generate a new password or 
 To check the status of your Elasticsearch cluster, use the following command:
 
 ```bash
-curl -u elastic:<password> -X GET "http://localhost:9200/_cluster/health?pretty"
+curl -u elastic:<password> -X GET "https://localhost:9200" --insecure
 ```
 
 Replace `<password>` with the current password for the `elastic` user.
