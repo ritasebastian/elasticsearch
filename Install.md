@@ -22,7 +22,7 @@ To install Elasticsearch 8.16 on an Amazon Linux 2023 (Amazon Linux 3) EC2 insta
 4. **Configure Elasticsearch** (Optional):
    Modify the configuration file if needed:
    ```bash
-   sudo nano /etc/elasticsearch/elasticsearch.yml
+   sudo vi /etc/elasticsearch/elasticsearch.yml
    ```
    Set values like `network.host` and `http.port` as per your requirements. For example:
    ```yaml
