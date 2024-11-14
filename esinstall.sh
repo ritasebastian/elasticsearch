@@ -24,16 +24,28 @@ echo "$ES_USER hard nofile $ES_MAX_OPEN_FILES" | sudo tee -a /etc/security/limit
 echo "Update system"
 sudo yum update -y
 
+sudo mkdir -p $ES_HOME
+
+sudo chown -R $ES_USER:$ES_GROUP $ES_LOG_PATH $ES_HOME
+
 echo "Install OpenJDK 11"
-sudo yum install -y java-11-openjdk
+# Download and install Amazon Corretto 11 (OpenJDK)
+cd /usr/local/share/elasticsearch
+sudo wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.tar.gz
+
+# Extract the downloaded binary
+sudo tar zxvf amazon-corretto-11-x64-linux-jdk.tar.gz
+
+# Rename the extracted directory to 'java'
+sudo mv amazon-corretto-11.* java
 
 echo "Downloading Elasticsearch"
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.x-linux-x86_64.tar.gz -O elasticsearch.tar.gz
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.16.0-linux-x86_64.tar.gz -O elasticsearch.tar.gz
 
 # Extract and move Elasticsearch
 tar -xf elasticsearch.tar.gz
 rm elasticsearch.tar.gz
-sudo mkdir -p $ES_HOME
+
 sudo mv elasticsearch-*/* $ES_HOME
 rm -rf elasticsearch-*
 
@@ -66,7 +78,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-Environment=JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+Environment=JAVA_HOME=/usr/local/share/elasticsearch/java
 ExecStart=$ES_HOME/bin/elasticsearch
 User=$ES_USER
 LimitNOFILE=$ES_MAX_OPEN_FILES
