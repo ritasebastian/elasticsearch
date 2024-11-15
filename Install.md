@@ -64,38 +64,6 @@ Then, make sure `rc.local` has execution permission:
 sudo chmod +x /etc/rc.local
 ```
 
-cluster.name: my-cluster  # Name of the cluster (must be the same for all nodes)
-http.host: 0.0.0.0
-http.port: 9200           # HTTP port for REST API
-
-# Discovery settings to locate other nodes
-discovery.seed_hosts: ["es1", "es2", "es3"]
-cluster.initial_master_nodes: ["es1", "es2", "es3"]
-
-# Security settings (if needed)
-# xpack.security.enabled: true
-# xpack.security.transport.ssl.enabled: true
-
-# Path to store data
-path.data: /var/lib/elasticsearch
-path.logs: /var/log/elasticsearch
-
-# node1
-node.name: es1            # Unique name for the node
-node.roles: ["master", "data"]  # Master-eligible and data node
-network.host: es1         # Hostname or IP address of this node
-
-# node2
-node.name: es2            # Unique name for the node
-node.roles: ["master", "data"]  # Master-eligible and data node
-network.host: es2         # Hostname or IP address of this node
-
-# node3
-node.name: es3            # Unique name for the node
-node.roles: ["master", "data"]  # Master-eligible and data node
-network.host: es3         # Hostname or IP address of this node
-
-
 **Option B: Create a Systemd Service**
 
 If `/etc/rc.local` is not available, create a custom systemd service to disable THP:
@@ -221,3 +189,41 @@ The output will include details such as:
 - `active_shards`, `relocating_shards`, `initializing_shards`, `unassigned_shards`: Various metrics about shard allocation.
 
 This command will help confirm the cluster’s operational status and ensure everything is configured correctly.
+
+### Cluster Setup
+
+cluster.name: my-cluster  # Name of the cluster (must be the same for all nodes)
+http.host: 0.0.0.0
+http.port: 9200           # HTTP port for REST API
+
+# Discovery settings to locate other nodes
+discovery.seed_hosts: ["es1", "es2", "es3"]
+cluster.initial_master_nodes: ["es1", "es2", "es3"]
+
+
+# node1
+node.name: node1           # Unique name for the node
+node.roles: ["master", "data"]  # Master-eligible and data node
+network.host: es1         # Hostname or IP address of this node
+
+# node2
+node.name: node2            # Unique name for the node
+node.roles: ["master", "data"]  # Master-eligible and data node
+network.host: es2         # Hostname or IP address of this node
+
+# node3
+node.name: node2            # Unique name for the node
+node.roles: ["master", "data"]  # Master-eligible and data node
+network.host: es3         # Hostname or IP address of this node
+
+### Example of a .netrc File:
+
+machine example.com
+login myusername
+password mypassword
+
+machine anotherexample.com
+login anotheruser
+password anotherpassword
+
+
