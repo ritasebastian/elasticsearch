@@ -1,7 +1,7 @@
 Here’s a breakdown of how to configure Elasticsearch kernel parameters by updating:
 
-1. **`/etc/sysctl.conf`** for kernel parameters that require `sysctl`.
-2. **`/etc/security/limits.conf`** for file descriptor and process limits specific to the Elasticsearch user.
+1. **`sudo vi /etc/sysctl.conf`** for kernel parameters that require `sysctl`.
+2. **`sudo vi /etc/security/limits.conf`** for file descriptor and process limits specific to the Elasticsearch user.
 
 ### 1. **Configure Kernel Parameters in `/etc/sysctl.conf`**
 Add these lines to `/etc/sysctl.conf` to set the required kernel parameters for Elasticsearch:
