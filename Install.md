@@ -201,17 +201,17 @@ discovery.seed_hosts: ["es1", "es2", "es3"]
 cluster.initial_master_nodes: ["es1", "es2", "es3"]
 
 
-# node1
+### node1
 node.name: node1           # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es1         # Hostname or IP address of this node
 
-# node2
+### node2
 node.name: node2            # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es2         # Hostname or IP address of this node
 
-# node3
+### node3
 node.name: node2            # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es3         # Hostname or IP address of this node
