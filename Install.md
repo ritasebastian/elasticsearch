@@ -1,3 +1,105 @@
+Here’s a breakdown of how to configure Elasticsearch kernel parameters by updating:
+
+1. **`/etc/sysctl.conf`** for kernel parameters that require `sysctl`.
+2. **`/etc/security/limits.conf`** for file descriptor and process limits specific to the Elasticsearch user.
+
+### 1. **Configure Kernel Parameters in `/etc/sysctl.conf`**
+Add these lines to `/etc/sysctl.conf` to set the required kernel parameters for Elasticsearch:
+
+```bash
+# Maximum number of memory map areas a process may have
+vm.max_map_count=262144
+
+# Maximum file handles for the entire system
+fs.file-max=65535
+
+# Network settings
+net.ipv4.tcp_retries2=5          # Reduces TCP retries
+net.ipv4.tcp_fin_timeout=30      # Reduces the TCP FIN timeout
+net.ipv4.tcp_keepalive_time=300  # Enables TCP keepalive
+
+# Swappiness setting to reduce swapping
+vm.swappiness=1
+
+# Disk I/O performance settings
+vm.dirty_ratio=40
+vm.dirty_background_ratio=10
+```
+
+After making changes to `/etc/sysctl.conf`, apply them with:
+
+```bash
+sudo sysctl -p
+```
+
+### 2. **Configure User Limits in `/etc/security/limits.conf`**
+Edit the `/etc/security/limits.conf` file to set file descriptor and process limits specifically for the `elasticsearch` user. Add the following lines:
+
+```bash
+# Increase the maximum number of open files for Elasticsearch
+elasticsearch soft nofile 65536
+elasticsearch hard nofile 65536
+
+# Increase the maximum number of processes for Elasticsearch
+elasticsearch soft nproc 4096
+elasticsearch hard nproc 4096
+```
+
+### 3. **Disable Transparent Huge Pages (THP) with `rc.local` or Systemd Service**
+
+Since Transparent Huge Pages (THP) can impact Elasticsearch performance, you can disable it using either `/etc/rc.local` or by creating a custom systemd service.
+
+**Option A: Using `/etc/rc.local` (if available)**
+
+Add these lines to `/etc/rc.local`:
+
+```bash
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+```
+
+Then, make sure `rc.local` has execution permission:
+
+```bash
+sudo chmod +x /etc/rc.local
+```
+
+**Option B: Create a Systemd Service**
+
+If `/etc/rc.local` is not available, create a custom systemd service to disable THP:
+
+1. Create a new service file:
+
+   ```bash
+   sudo nano /etc/systemd/system/disable-thp.service
+   ```
+
+2. Add the following content to the file:
+
+   ```ini
+   [Unit]
+   Description=Disable Transparent Huge Pages (THP)
+   After=sysinit.target
+
+   [Service]
+   Type=oneshot
+   ExecStart=/bin/bash -c "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+   ExecStart=/bin/bash -c "echo never > /sys/kernel/mm/transparent_hugepage/defrag"
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+3. Enable and start the service:
+
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable disable-thp.service
+   sudo systemctl start disable-thp.service
+   ```
+
+This configuration should optimize your Elasticsearch environment by setting appropriate kernel parameters and user limits.
+
 To install Elasticsearch 8.16 on an Amazon Linux 2023 (Amazon Linux 3) EC2 instance, follow these steps:
 
 1. **Update the System Packages**:
