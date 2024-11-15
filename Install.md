@@ -64,6 +64,36 @@ Then, make sure `rc.local` has execution permission:
 sudo chmod +x /etc/rc.local
 ```
 
+cluster.name: my-cluster  # Name of the cluster (must be the same for all nodes)
+network.host: 0.0.0.0     # Bind to all available interfaces
+http.port: 9200           # HTTP port for REST API
+
+# Discovery settings to locate other nodes
+discovery.seed_hosts: ["es1", "es2", "es3"]
+cluster.initial_master_nodes: ["es1", "es2", "es3"]
+
+# Security settings (if needed)
+# xpack.security.enabled: true
+# xpack.security.transport.ssl.enabled: true
+
+# Path to store data
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+
+######
+node.name: es1            # Unique name for the node
+node.roles: ["master", "data"]  # Master-eligible and data node
+network.host: es1         # Hostname or IP address of this node
+
+node.name: es2            # Unique name for the node
+node.roles: ["master", "data"]  # Master-eligible and data node
+network.host: es2         # Hostname or IP address of this node
+
+node.name: es3            # Unique name for the node
+node.roles: ["master", "data"]  # Master-eligible and data node
+network.host: es3         # Hostname or IP address of this node
+
+
 **Option B: Create a Systemd Service**
 
 If `/etc/rc.local` is not available, create a custom systemd service to disable THP:
