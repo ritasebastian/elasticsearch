@@ -65,7 +65,7 @@ sudo chmod +x /etc/rc.local
 ```
 
 cluster.name: my-cluster  # Name of the cluster (must be the same for all nodes)
-network.host: 0.0.0.0     # Bind to all available interfaces
+http.host: 0.0.0.0
 http.port: 9200           # HTTP port for REST API
 
 # Discovery settings to locate other nodes
@@ -80,15 +80,17 @@ cluster.initial_master_nodes: ["es1", "es2", "es3"]
 path.data: /var/lib/elasticsearch
 path.logs: /var/log/elasticsearch
 
-######
+# node1
 node.name: es1            # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es1         # Hostname or IP address of this node
 
+# node2
 node.name: es2            # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es2         # Hostname or IP address of this node
 
+# node3
 node.name: es3            # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es3         # Hostname or IP address of this node
