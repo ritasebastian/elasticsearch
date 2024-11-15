@@ -191,33 +191,35 @@ The output will include details such as:
 This command will help confirm the cluster’s operational status and ensure everything is configured correctly.
 
 ### Cluster Setup
-
+```bash
 cluster.name: my-cluster  # Name of the cluster (must be the same for all nodes)
 http.host: 0.0.0.0
 http.port: 9200           # HTTP port for REST API
-
 # Discovery settings to locate other nodes
 discovery.seed_hosts: ["es1", "es2", "es3"]
 cluster.initial_master_nodes: ["es1", "es2", "es3"]
-
+```
 
 ### node1
+```bash
 node.name: node1           # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es1         # Hostname or IP address of this node
-
+```
 ### node2
+```bash
 node.name: node2            # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es2         # Hostname or IP address of this node
-
+```
 ### node3
+```bash
 node.name: node2            # Unique name for the node
 node.roles: ["master", "data"]  # Master-eligible and data node
 network.host: es3         # Hostname or IP address of this node
-
+```
 ### Example of a .netrc File:
-
+```bash
 machine example.com
 login myusername
 password mypassword
@@ -225,5 +227,5 @@ password mypassword
 machine anotherexample.com
 login anotheruser
 password anotherpassword
-
+```
 
