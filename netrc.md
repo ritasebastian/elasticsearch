@@ -6,7 +6,7 @@ To set up and use a `.netrc` file for Elasticsearch authentication, follow these
 
 1. Open or create the `.netrc` file in your home directory:
    ```bash
-   nano ~/.netrc
+   vi ~/.netrc
    ```
 
 2. Add your Elasticsearch credentials. The file should look like this:
