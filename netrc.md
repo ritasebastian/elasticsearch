@@ -51,7 +51,7 @@ If you want to use a custom `.netrc` file (not in the default location), you can
 
 1. Create a custom `.netrc` file:
    ```bash
-   nano ~/custom_netrc
+   vi ~/custom_netrc
    ```
 
 2. Add the same content:
