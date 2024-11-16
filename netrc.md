@@ -75,7 +75,7 @@ If your Elasticsearch hostname changes dynamically (e.g., in AWS), create a scri
 #### Example Script:
 ```bash
 #!/bin/bash
-HOSTNAME=$(curl -s http://169.254.169.254/latest/meta-data/hostname)  # Get current hostname in AWS EC2
+# HOSTNAME=$(curl -s http://169.254.169.254/latest/meta-data/hostname)  # Get current hostname in AWS EC2
 echo "machine $HOSTNAME" > ~/.netrc
 echo "login elastic" >> ~/.netrc
 echo "password your_password" >> ~/.netrc
