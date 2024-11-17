@@ -158,7 +158,9 @@ The `jvm.options` file is located in the Elasticsearch configuration directory, 
    ```bash
    sudo vi /etc/elasticsearch/jvm.options
    ```
-
+   ```bash
+   sudo sed -i 's/^-Xms[0-9]*[a-zA-Z]*$/-Xms2g/; s/^-Xmx[0-9]*[a-zA-Z]*$/-Xmx2g/' /etc/elasticsearch/jvm.options
+   ```
 2. **Set Heap Size:**
    Modify the following parameters to define the heap size for Elasticsearch:
    ```plaintext
@@ -189,7 +191,9 @@ The `jvm.options` file is located in the Elasticsearch configuration directory, 
 ### Verify JVM Settings:
 You can check the active JVM settings in the Elasticsearch logs or via the API:
 ```bash
-curl -X GET "localhost:9200/_nodes/jvm?pretty"
+curl -k -u elastic:esdemo https://$HOSTNAME:9200/_nodes/jvm?pretty
+curl -k -u elastic:esdemo https://$HOSTNAME:9200/_nodes/jvm?pretty | jq '.nodes[] | {heap_max: .jvm.mem.heap_max_in_bytes, heap_used: .jvm.mem.heap_used_in_bytes}'
+
 ```
 
 
