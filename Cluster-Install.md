@@ -14,7 +14,7 @@ Here's the updated script to include additional **network settings** for Elastic
  ```bash
    sudo vi configure_elasticsearch_network.sh
    ```
-Copy the below contect.
+Copy the below contect. edit hostname & ip address.
 
 ```bash
 #!/bin/bash
