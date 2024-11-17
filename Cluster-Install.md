@@ -264,8 +264,8 @@ Stop the nodes
  ```bash
  sudo systemctl stop elasticsearch
  ```
+Edit the config file (discovery.seed_hosts: ["es1:9300","es2:9300","es3:9200"]
 ```bash
-Edit the config file
 sudo vi /etc/elasticsearch/elasticsearch.yml
 ```
 Start the node 
