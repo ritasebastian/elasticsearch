@@ -197,7 +197,7 @@ curl -k -u elastic:esdemo https://$HOSTNAME:9200/_nodes/jvm?pretty | jq '.nodes[
 ```
 
 
-Update /etc/elasticsearch/elasticsearch.yml file before start the Elasticsearch
+### Update /etc/elasticsearch/elasticsearch.yml file before start the Elasticsearch
 ```bash
 sudo vi /etc/elasticsearch/elasticsearch.yml
 ```
