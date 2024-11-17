@@ -430,14 +430,21 @@ sudo vi /etc/kibana/kibana.yml
 ```
 server.port: 5601
 server.host: 0.0.0.0
-server.publicBaseUrl: "https://kibana.evermight.net:5601"
-server.ssl.enabled: true
-server.ssl.key: /etc/kibana/certs/kibana.evermight.net/priv1.key
-server.ssl.certificate: /etc/kibana/certs/kibana.evermight.net/fullchain1.pem
-elasticsearch.hosts: ["https://node1.evermight.net:9200"]
-elasticsearch.ssl.verificationMode: full
+server.publicBaseUrl: "http://<PublicIp>:5601"
+server.ssl.enabled: false
+elasticsearch.hosts: ["https://es1:9200"]
+elasticsearch.ssl.verificationMode: none
 ```
 ---
+Start the kibana 
+ ```bash
+   sudo systemctl start kibana
+   ```
+Verify the kibana 
+ ```bash
+   sudo systemctl status kibana
+   ```
+
 ### **6. Configure Elasticsearch (Optional)**
 
 If you need to make Elasticsearch accessible externally or customize its configuration:
