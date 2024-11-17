@@ -84,7 +84,7 @@ echo "Configuration completed. Please verify the settings!"
 1. Save the updated script to a file, e.g., `configure_elasticsearch_network.sh`.
 2. Make the script executable:
    ```bash
-   chmod +x configure_elasticsearch_network.sh
+   sudo chmod +x configure_elasticsearch_network.sh
    ```
 3. Run the script as `sudo`:
    ```bash
