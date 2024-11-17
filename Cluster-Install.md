@@ -191,6 +191,8 @@ You can check the active JVM settings in the Elasticsearch logs or via the API:
 ```bash
 curl -X GET "localhost:9200/_nodes/jvm?pretty"
 ```
+
+
 Update /etc/elasticsearch/elasticsearch.yml file before start the Elasticsearch
 ```bash
 sudo vi /etc/elasticsearch/elasticsearch.yml
@@ -223,7 +225,9 @@ Test Elasticsearch by querying it:
 ```bash
 curl -k -u elastic:esdemo https://es1:9200/_cluster/health?pretty
 ```
-
+```bash
+curl -k -u elastic:esdemo https://$HOSTNAME:9200/_cat/nodes?pretty
+```
 If Elasticsearch is running, you’ll see a JSON response with details about the version and cluster.
 
 ---
