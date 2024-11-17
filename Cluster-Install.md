@@ -201,7 +201,8 @@ network.host: es1
 http.port: 9200
 cluster.initial_master_nodes: ["node1"]
 
-Let me know if you have any specific JVM parameter requirements!
+---
+
 3. **Start Elasticsearch**:
    ```bash
    sudo systemctl start elasticsearch
@@ -211,14 +212,16 @@ Let me know if you have any specific JVM parameter requirements!
    ```bash
    sudo systemctl status elasticsearch
    ```
-
 ---
-
+### **5. Reset default password**
+```bash
+   sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -i -u elastic
+   ```
 ### **5. Verify Installation**
 
 Test Elasticsearch by querying it:
 ```bash
-curl -X GET "http://localhost:9200"
+curl -k -u elastic:esdemo https://es1:9200/_cluster/health?pretty
 ```
 
 If Elasticsearch is running, you’ll see a JSON response with details about the version and cluster.
