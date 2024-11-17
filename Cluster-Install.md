@@ -259,6 +259,24 @@ Start Elasticsearch:
    ```
 ---
 
+### **6. Final steps to update elasticsearch/elasticsearch.yml sync with all nodes**
+Stop the nodes
+ ```bash
+ sudo systemctl stop elasticsearch
+ ```
+```bash
+Edit the config file
+sudo vi /etc/elasticsearch/elasticsearch.yml
+```
+Start the node 
+ ```bash
+ sudo systemctl start elasticsearch
+ ```
+Verify
+```bash
+curl -k -u elastic:esdemo https://$HOSTNAME:9200/_cat/nodes?pretty
+```
+
 ### **6. Configure Elasticsearch (Optional)**
 
 If you need to make Elasticsearch accessible externally or customize its configuration:
