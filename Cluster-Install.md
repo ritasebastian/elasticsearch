@@ -90,7 +90,10 @@ echo "Configuration completed. Please verify the settings!"
    ```bash
    sudo ./configure_elasticsearch_network.sh
    ```
-
+3. Make usr /etc/hosts are updated by all cluster nodes and ping make sure all are can talk each other ( in aws set right security group All ICMP - IPv6 & All ICMP - IPv4 to be enabled)
+   ```bash
+   sudo vi /etc/hosts
+   ```
 
 ### **2. Download and Install the Public Signing Key**
 
