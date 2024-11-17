@@ -318,20 +318,46 @@ sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
 ---
 
-### **Install Kaban**
+### **Install kibana**
 
 1. **Install Elasticsearch Using Yum**:
    ```bash
-   sudo dnf -y install kaban
+   sudo dnf -y install kibana
    ```
 
 2. **Enable Elasticsearch to Start at Boot**:
    ```bash
-   sudo systemctl enable kaban
+   sudo systemctl enable kibana
    ```
 ---
+### Create Service Token
+Run this command from any server server:
+```bash
+curl -X POST -u elastic:esdemo -k https://es1:9200/_security/service/elastic/kibana/credential/token/kibana_token
+```
+Run this command in kibana Server
+```bash
+sudo /usr/share/kibana/bin/kibana-keystore add elasticsearch.serviceAccountToken
+```
+Paste in the token after the prompt.
+---
 
-
+### Update /etc/kibana/kibana.yml file before start the kibana
+```bash
+sudo vi /etc/kibana/kibana.yml
+```
+---
+```
+server.port: 5601
+server.host: 0.0.0.0
+server.publicBaseUrl: "https://kibana.evermight.net:5601"
+server.ssl.enabled: true
+server.ssl.key: /etc/kibana/certs/kibana.evermight.net/priv1.key
+server.ssl.certificate: /etc/kibana/certs/kibana.evermight.net/fullchain1.pem
+elasticsearch.hosts: ["https://node1.evermight.net:9200"]
+elasticsearch.ssl.verificationMode: full
+```
+---
 ### **6. Configure Elasticsearch (Optional)**
 
 If you need to make Elasticsearch accessible externally or customize its configuration:
