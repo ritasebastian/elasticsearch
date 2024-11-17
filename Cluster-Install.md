@@ -426,6 +426,30 @@ elasticsearch.ssl.verificationMode: none
 ```bash
 sudo vi /etc/kibana/kibana.yml
 ```
+### backup orginal fole and Create a updated file
+```bash
+sudo mv /etc/kibana/kibana.yml /etc/kibana/kibana.yml.org
+sudo cat <<EOF > /etc/kibana/kibana.yml
+server.port: 5601
+server.host: "0.0.0.0"
+server.publicBaseUrl: "http://52.41.2.183:5601" # Public IP
+server.ssl.enabled: false
+elasticsearch.hosts: ["https://es1:9200","https://es2:9200","https://es3:9200"]
+elasticsearch.ssl.verificationMode: none
+logging:
+  appenders:
+    file:
+      type: file
+      fileName: /var/log/kibana/kibana.log
+      layout:
+        type: json
+  root:
+    appenders:
+      - default
+      - file
+pid.file: /run/kibana/kibana.pid
+EOF
+```
 ---
 ```
 server.port: 5601
