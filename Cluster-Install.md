@@ -140,7 +140,75 @@ sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
    ```bash
    sudo systemctl enable elasticsearch
    ```
+In Elasticsearch, JVM parameters are typically updated in the **`jvm.options`** file. This file is used to configure Java Virtual Machine (JVM) settings, including heap size and garbage collection options.
 
+### File Location:
+The `jvm.options` file is located in the Elasticsearch configuration directory, typically:
+
+- **Linux (package installations):** `/etc/elasticsearch/jvm.options`
+- **Linux (tar.gz/zip installations):** `<elasticsearch-install-dir>/config/jvm.options`
+- **Windows:** `<elasticsearch-install-dir>\config\jvm.options`
+
+### Steps to Update JVM Parameters:
+
+1. **Edit the `jvm.options` File:**
+   Open the file in a text editor:
+   ```bash
+   sudo vi /etc/elasticsearch/jvm.options
+   ```
+
+2. **Set Heap Size:**
+   Modify the following parameters to define the heap size for Elasticsearch:
+   ```plaintext
+   -Xms2g
+   -Xmx2g
+   ```
+   - `-Xms`: Minimum heap size (e.g., `2g` for 2 GB).
+   - `-Xmx`: Maximum heap size (e.g., `2g` for 2 GB).
+
+   **Tip:** The values for `-Xms` and `-Xmx` should be the same to prevent heap resizing.
+
+3. **Add/Modify Additional JVM Parameters:**
+   Add or modify other JVM options as needed. For example:
+   ```plaintext
+   -XX:+UseG1GC
+   -Djava.io.tmpdir=/tmp
+   -XX:MaxDirectMemorySize=4g
+   ```
+
+4. **Save and Exit:**
+   Save the file (`Ctrl+O` in nano) and exit (`Ctrl+X`).
+
+5. **Restart Elasticsearch:**
+   Apply the changes by restarting Elasticsearch:
+   ```bash
+   sudo systemctl restart elasticsearch
+   ```
+
+### Important Notes:
+- Ensure the heap size (`-Xms` and `-Xmx`) is no more than **50% of your total system memory**. Reserve the other 50% for the operating system and other processes.
+- Monitor the Elasticsearch logs after updating the JVM parameters to confirm there are no errors:
+   ```bash
+   sudo journalctl -u elasticsearch -f
+   ```
+- Make sure the values align with your hardware resources and workload.
+
+### Verify JVM Settings:
+You can check the active JVM settings in the Elasticsearch logs or via the API:
+```bash
+curl -X GET "localhost:9200/_nodes/jvm?pretty"
+```
+Update /etc/elasticsearch/elasticsearch.yml file before start the Elasticsearch
+```bash
+sudo vi /etc/elasticsearch/elasticsearch.yml
+```
+cluster.name: es-demo
+node.name: node1
+network.host: es1
+http.port: 9200
+cluster.initial_master_nodes: ["node1"]
+
+Let me know if you have any specific JVM parameter requirements!
 3. **Start Elasticsearch**:
    ```bash
    sudo systemctl start elasticsearch
