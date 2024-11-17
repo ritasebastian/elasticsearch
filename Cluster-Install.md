@@ -231,6 +231,25 @@ curl -k -u elastic:esdemo https://$HOSTNAME:9200/_cat/nodes?pretty
 If Elasticsearch is running, you’ll see a JSON response with details about the version and cluster.
 
 ---
+### **6. Adding other node(s) in the cluster**
+Run this command in node1 get the token
+```bash
+sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node
+```
+Run this command in node2 & node3
+```bash
+sudo /usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token <paste the token>
+```
+Update /etc/elasticsearch/elasticsearch.yml file before start the Elasticsearch
+```bash
+sudo vi /etc/elasticsearch/elasticsearch.yml
+```
+cluster.name: es-demo
+node.name: node1
+network.host: es1
+http.port: 9200
+cluster.initial_master_nodes: ["node1"]
+---
 
 ### **6. Configure Elasticsearch (Optional)**
 
