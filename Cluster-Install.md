@@ -445,6 +445,77 @@ Verify the kibana
    sudo systemctl status kibana
    ```
 
+To execute the same commands in **Kibana Dev Tools**, follow these steps:
+
+---
+
+### **1. Open Kibana Dev Tools**
+1. Navigate to **Kibana** in your browser.
+2. Go to **Management** > **Dev Tools** (or **Console**).
+
+---
+
+### **2. Create a Test Index**
+Use the following query to create the `test_index`:
+
+```json
+PUT /test_index
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "name": { "type": "text" },
+      "age": { "type": "integer" },
+      "city": { "type": "keyword" }
+    }
+  }
+}
+```
+
+---
+
+### **3. Add a Sample Document**
+Add a document to the `test_index`:
+
+```json
+POST /test_index/_doc/1
+{
+  "name": "John Doe",
+  "age": 30,
+  "city": "New York"
+}
+```
+
+Retrieve the document to verify it was added:
+
+```json
+GET /test_index/_doc/1
+```
+
+---
+
+### **4. Test Shard Commands**
+
+#### **Check Shard Allocation**
+```json
+GET /_cat/shards/test_index?v
+```
+
+#### **Shard Routing Information**
+```json
+GET /_cat/shards/test_index?h=index,shard,prirep,state,node,ip
+```
+
+#### **Shard Health**
+```json
+GET /_cluster/health/test_index
+```
+
+---
+
 ### **6. Configure Elasticsearch (Optional)**
 
 If you need to make Elasticsearch accessible externally or customize its configuration:
