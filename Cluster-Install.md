@@ -138,6 +138,7 @@ sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
 2. **Enable Elasticsearch to Start at Boot**:
    ```bash
+   sudo cp /etc/elasticsearch/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml.org
    sudo systemctl enable elasticsearch
    ```
 ---
@@ -251,13 +252,14 @@ Update /etc/elasticsearch/elasticsearch.yml file before start the Elasticsearch
 sudo vi /etc/elasticsearch/elasticsearch.yml
 ```
 ---
+## Node2
 ```bash
 sudo cat <<EOF > /etc/elasticsearch/elasticsearch.yml
 cluster.name: es-demo
-node.name: node3
+node.name: node2
 path.data: /var/lib/elasticsearch
 path.logs: /var/log/elasticsearch
-network.host: es3
+network.host: es2
 http.port: 9200
 cluster.initial_master_nodes: ["node1", "node2", "node3"]
 xpack.security.enabled: true
@@ -276,7 +278,34 @@ transport.host: 0.0.0.0
 EOF
 ```
 ---
+
+## Node3 
+```bash
+sudo cat <<EOF > /etc/elasticsearch/elasticsearch.yml
+cluster.name: es-demo
+node.name: node3 
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+network.host: es3 
+http.port: 9200
+cluster.initial_master_nodes: ["node1", "node2", "node3"]
+xpack.security.enabled: true
+xpack.security.enrollment.enabled: true
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: certs/http.p12
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  keystore.path: certs/transport.p12
+  truststore.path: certs/transport.p12
+discovery.seed_hosts: ["es1:9300","es2:9300","es3:9300"]
+http.host: 0.0.0.0
+transport.host: 0.0.0.0
+EOF
+```
 ---
+
 ``` bash
 cluster.name: es-demo
 node.name: node1
