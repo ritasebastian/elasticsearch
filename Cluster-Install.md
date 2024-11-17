@@ -252,11 +252,11 @@ network.host: es1
 http.port: 9200
 cluster.initial_master_nodes: ["node1"]
 ---
-**Start Elasticsearch**:
+Start Elasticsearch:
    ```bash
    sudo systemctl start elasticsearch
    ```
----
+
 
 ### **6. Configure Elasticsearch (Optional)**
 
