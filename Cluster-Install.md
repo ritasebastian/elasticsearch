@@ -140,6 +140,8 @@ sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
    ```bash
    sudo systemctl enable elasticsearch
    ```
+---
+
 In Elasticsearch, JVM parameters are typically updated in the **`jvm.options`** file. This file is used to configure Java Virtual Machine (JVM) settings, including heap size and garbage collection options.
 
 ### File Location:
@@ -176,15 +178,6 @@ The `jvm.options` file is located in the Elasticsearch configuration directory, 
    -XX:MaxDirectMemorySize=4g
    ```
 
-4. **Save and Exit:**
-   Save the file (`Ctrl+O` in nano) and exit (`Ctrl+X`).
-
-5. **Restart Elasticsearch:**
-   Apply the changes by restarting Elasticsearch:
-   ```bash
-   sudo systemctl restart elasticsearch
-   ```
-
 ### Important Notes:
 - Ensure the heap size (`-Xms` and `-Xmx`) is no more than **50% of your total system memory**. Reserve the other 50% for the operating system and other processes.
 - Monitor the Elasticsearch logs after updating the JVM parameters to confirm there are no errors:
@@ -213,7 +206,7 @@ Let me know if you have any specific JVM parameter requirements!
    ```bash
    sudo systemctl start elasticsearch
    ```
-
+---
 4. **Check Elasticsearch Status**:
    ```bash
    sudo systemctl status elasticsearch
