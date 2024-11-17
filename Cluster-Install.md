@@ -244,12 +244,14 @@ Update /etc/elasticsearch/elasticsearch.yml file before start the Elasticsearch
 ```bash
 sudo vi /etc/elasticsearch/elasticsearch.yml
 ```
+---
+``` Sample 
 cluster.name: es-demo
 node.name: node1
 network.host: es1
 http.port: 9200
 cluster.initial_master_nodes: ["node1"]
-
+---
 **Start Elasticsearch**:
    ```bash
    sudo systemctl start elasticsearch
