@@ -340,8 +340,88 @@ Run this command in kibana Server
 sudo /usr/share/kibana/bin/kibana-keystore add elasticsearch.serviceAccountToken
 ```
 Paste in the token after the prompt.
+
+Change ownership of token files
+```bash
+sudo chown kibana:kibana /etc/kibana/*
+```
+
+
+---
+To enable **default self-signed certificates** on Kibana for SSL, follow these steps:
+
 ---
 
+### 1. **Default Self-Signed Certificates in Kibana**
+Kibana includes default self-signed certificates located in:
+- **Key**: `/usr/share/kibana/config/kibana.key`
+- **Certificate**: `/usr/share/kibana/config/kibana.crt`
+
+These certificates are pre-generated and suitable for testing or internal use. To enable them:
+
+---
+
+### 2. **Update `kibana.yml`**
+Add the following settings to your `kibana.yml` file:
+
+```yaml
+server.ssl.enabled: true
+server.ssl.key: /usr/share/kibana/config/kibana.key
+server.ssl.certificate: /usr/share/kibana/config/kibana.crt
+```
+
+This enables SSL and configures Kibana to use the default certificates.
+
+---
+
+### 3. **Set the Public Base URL**
+Ensure you configure the public base URL if accessing Kibana from outside the server:
+
+```yaml
+server.publicBaseUrl: "https://<public-ip-or-domain>:5601"
+```
+
+Replace `<public-ip-or-domain>` with your public IP or domain name.
+
+---
+
+### 4. **Restart Kibana**
+Restart the Kibana service to apply the changes:
+
+```bash
+sudo systemctl restart kibana
+```
+
+---
+
+### 5. **Verify SSL Configuration**
+- Access Kibana in your browser using the `https` protocol:
+  ```
+  https://<your-kibana-server>:5601
+  ```
+  If you use the self-signed certificates, your browser may show a warning because the certificate is not from a trusted CA. You can bypass this warning for testing.
+
+- Check Kibana logs for any issues:
+  ```bash
+  sudo journalctl -u kibana -f
+  ```
+
+---
+
+### 6. **Optional: Use Custom Certificates**
+If you want to replace the default certificates with your own, update the `server.ssl.key` and `server.ssl.certificate` paths in `kibana.yml` to point to your custom key and certificate files.
+
+---
+
+### 7. **Disable SSL Verification in Elasticsearch (Optional for Testing)**
+If you encounter issues connecting Kibana to Elasticsearch over HTTPS with self-signed certificates, you can disable SSL verification in `kibana.yml` for testing:
+
+```yaml
+elasticsearch.ssl.verificationMode: none
+```
+
+
+---
 ### Update /etc/kibana/kibana.yml file before start the kibana
 ```bash
 sudo vi /etc/kibana/kibana.yml
