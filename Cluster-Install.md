@@ -283,6 +283,55 @@ Verify
 curl -k -u elastic:esdemo https://$HOSTNAME:9200/_cat/nodes?pretty
 ```
 
+### ** Install Kibana
+### ** Download and Install the Public Signing Key**
+
+Import the GPG signing key for Elasticsearch:
+```bash
+sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+```
+
+---
+
+###  Create the Elasticsearch Repository**
+
+#### For RHEL, CentOS, Fedora, or Amazon Linux
+
+1. Create the repository file using the `cat <<EOF` format:
+   ```bash
+   sudo cat <<EOF > /etc/yum.repos.d/elasticsearch.repo
+   [elasticsearch]
+   name=Elasticsearch repository
+   baseurl=https://artifacts.elastic.co/packages/8.x/yum
+   gpgcheck=1
+   gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+   enabled=1
+   autorefresh=1
+   type=rpm-md
+   EOF
+   ```
+
+2. Verify the repository file:
+   ```bash
+   cat /etc/yum.repos.d/elasticsearch.repo
+   ```
+
+---
+
+### **Install Kaban**
+
+1. **Install Elasticsearch Using Yum**:
+   ```bash
+   sudo dnf -y install kaban
+   ```
+
+2. **Enable Elasticsearch to Start at Boot**:
+   ```bash
+   sudo systemctl enable kaban
+   ```
+---
+
+
 ### **6. Configure Elasticsearch (Optional)**
 
 If you need to make Elasticsearch accessible externally or customize its configuration:
