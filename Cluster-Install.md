@@ -221,11 +221,11 @@ cluster.initial_master_nodes: ["node1"]
    sudo systemctl status elasticsearch
    ```
 ---
-### **5. Reset default password**
+### ** Reset default password**
 ```bash
    sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -i -u elastic
    ```
-### **5. Verify Installation**
+### ** Verify Installation**
 
 Test Elasticsearch by querying it:
 ```bash
@@ -237,7 +237,7 @@ curl -k -u elastic:esdemo https://$HOSTNAME:9200/_cat/nodes?pretty
 If Elasticsearch is running, you’ll see a JSON response with details about the version and cluster.
 
 ---
-### **6. Adding other node(s) in the cluster**
+### ** Adding other node(s) in the cluster**
 Run this command in node1 get the token
 ```bash
 sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node
